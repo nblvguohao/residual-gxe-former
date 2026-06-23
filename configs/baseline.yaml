@@ -1,0 +1,36 @@
+project:
+  name: residual_gxe_baselines
+  seed: 1234
+
+baselines:
+  simple:
+    - global_mean
+    - genotype_mean
+    - environment_mean
+  statistical:
+    - bayes_ridge
+    - ridge_rrblup
+    - gblup_kernel_ridge
+  machine_learning:
+    - random_forest
+    - xgboost_optional
+    - lightgbm_optional
+  deep_learning:
+    - mlp_concat
+    - genotype_only
+    - environment_only
+    - concat_transformer
+
+training:
+  seeds: [1234, 2345, 3456]
+  standardize_features: true
+  tune_hyperparameters: false
+
+evaluation:
+  metrics:
+    - pearson
+    - spearman
+    - rmse
+    - mae
+    - selection_gain
+    - ndcg

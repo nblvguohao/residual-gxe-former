@@ -1,0 +1,43 @@
+project:
+  name: residual_gxe_ablation
+  seed: 1234
+
+ablations:
+  - name: full
+    residual_learning: true
+    weather_sequence: true
+    cross_attention: true
+    film: true
+    rank_loss: true
+  - name: no_residual_learning
+    residual_learning: false
+    weather_sequence: true
+    cross_attention: true
+    film: true
+    rank_loss: true
+  - name: no_weather_sequence
+    residual_learning: true
+    weather_sequence: false
+    cross_attention: true
+    film: true
+    rank_loss: true
+  - name: concat_only
+    residual_learning: true
+    weather_sequence: true
+    cross_attention: false
+    film: false
+    rank_loss: true
+  - name: no_rank_loss
+    residual_learning: true
+    weather_sequence: true
+    cross_attention: true
+    film: true
+    rank_loss: false
+  - name: genotype_only
+    residual_learning: true
+    use_genotype: true
+    use_environment: false
+  - name: environment_only
+    residual_learning: true
+    use_genotype: false
+    use_environment: true

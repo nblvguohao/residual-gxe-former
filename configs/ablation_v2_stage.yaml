@@ -1,0 +1,67 @@
+project:
+  name: residual_gxe_ablation_v2_stage
+  seed: 1234
+
+preprocessing:
+  marker_strategy: variance
+  weather_standardization: train_fold
+  weather:
+    mode: stage_summary
+    seq_len: 180
+
+model:
+  hidden_dim: 128
+  patch_size: 64
+  max_markers: 5000
+
+training:
+  epochs: 50
+  batch_size: 1024
+  learning_rate: 0.0005
+  weight_decay: 0.0001
+  early_stopping_patience: 10
+  gradient_clip_norm: 1.0
+  num_workers: 0
+  log_every: 20
+  amp: false
+  device: cuda
+
+ablations:
+  - name: full
+    residual_learning: true
+    weather_sequence: true
+    cross_attention: true
+    film: true
+    rank_loss: true
+  - name: no_residual_learning
+    residual_learning: false
+    weather_sequence: true
+    cross_attention: true
+    film: true
+    rank_loss: true
+  - name: no_weather_sequence
+    residual_learning: true
+    weather_sequence: false
+    cross_attention: true
+    film: true
+    rank_loss: true
+  - name: concat_only
+    residual_learning: true
+    weather_sequence: true
+    cross_attention: false
+    film: false
+    rank_loss: true
+  - name: no_rank_loss
+    residual_learning: true
+    weather_sequence: true
+    cross_attention: true
+    film: true
+    rank_loss: false
+  - name: genotype_only
+    residual_learning: true
+    use_genotype: true
+    use_environment: false
+  - name: environment_only
+    residual_learning: true
+    use_genotype: false
+    use_environment: true

@@ -1,0 +1,104 @@
+project:
+  name: residual_gxe_former_g2f_gpu
+  seed: 1234
+  output_dir: outputs/residual_gxe/g2f
+
+data:
+  dataset: g2f
+  raw_dir: data/raw/g2f
+  processed_dir: data/processed/g2f
+  phenotype_file: phenotype.parquet
+  genotype_file: genotype.parquet
+  environment_file: environment.parquet
+  weather_file: weather_daily.parquet
+  soil_file: soil.parquet
+  target_trait: grain_yield
+  sample_id_col: sample_id
+  genotype_id_col: genotype_id
+  environment_id_col: environment_id
+  year_col: year
+
+preprocessing:
+  marker_missing_threshold: 0.20
+  genotype_missing_threshold: 0.30
+  maf_threshold: 0.01
+  imputation: mean
+  phenotype_standardization: train_fold
+  weather_standardization: train_fold
+  genotype_standardization: train_fold
+
+splits:
+  seeds: [1234, 2345, 3456]
+  val_fraction: 0.15
+  test_fraction: 0.20
+  split_types:
+    - random
+    - leave_genotype
+    - leave_environment
+    - leave_year
+    - leave_ge
+
+mixed_model:
+  enabled: true
+  method: additive_main_effects
+  include_genotype_effect: true
+  include_environment_effect: true
+  fallback_for_unseen_genotype: global_mean
+  fallback_for_unseen_environment: global_mean
+
+model:
+  name: residual_gxe_former
+  genotype_encoder:
+    patch_size: 64
+    embedding_dim: 128
+    cnn_channels: 128
+    transformer_layers: 2
+    attention_heads: 4
+    dropout: 0.15
+  weather_encoder:
+    type: tcn
+    input_dim: null
+    hidden_dim: 128
+    layers: 3
+    dropout: 0.15
+    stage_pooling: true
+  static_env_encoder:
+    hidden_dim: 128
+    dropout: 0.10
+  fusion:
+    type: cross_attention
+    hidden_dim: 128
+    attention_heads: 4
+    use_film: true
+  prediction_head:
+    hidden_dim: 128
+    dropout: 0.20
+    output: phenotype
+  use_main_effect_input: true
+
+training:
+  epochs: 80
+  batch_size: 1024
+  learning_rate: 0.0005
+  weight_decay: 0.0001
+  early_stopping_patience: 10
+  gradient_clip_norm: 1.0
+  num_workers: 0
+  log_every: 20
+  amp: false
+  loss:
+    huber_delta: 1.0
+    rank_loss_weight: 0.05
+    aux_loss_weight: 0.0
+  device: cuda
+
+evaluation:
+  metrics:
+    - pearson
+    - spearman
+    - rmse
+    - mae
+    - selection_gain
+    - ndcg
+  topk_percentages: [0.05, 0.10, 0.20]
+  bootstrap_iterations: 1000

@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "residual-gxe"
+version = "0.1.0"
+description = "ResidualGxE-Former research scaffold"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.23",
+  "pandas>=1.5",
+  "scipy>=1.10",
+  "scikit-learn>=1.2",
+  "pyyaml>=6.0",
+  "torch>=2.0",
+  "pyarrow>=10.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = ["-p", "no:ddtrace"]

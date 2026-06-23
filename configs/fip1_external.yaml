@@ -1,0 +1,33 @@
+project:
+  name: residual_gxe_former_fip1_external
+  seed: 1234
+  output_dir: outputs/residual_gxe/fip1_external
+
+data:
+  dataset: fip1
+  raw_dir: data/raw/fip1
+  processed_dir: data/processed/fip1
+  target_trait: yield_adjusted
+  available_traits:
+    - yield_adjusted
+    - protein
+    - heading_date
+    - plant_height
+
+splits:
+  use_official_splits: true
+  official_split_names:
+    - train
+    - validation
+    - test_plot
+    - test_genotype
+    - test_environment
+    - test_genotype_environment
+
+model:
+  load_from_g2f: false
+  use_same_architecture_as_g2f: true
+
+evaluation:
+  report_test_p_g_e_ge: true
+  topk_percentages: [0.05, 0.10, 0.20]
